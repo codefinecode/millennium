@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Services\Database;
+use Exception;
 use PDO;
 
 class OrderRepository
@@ -10,9 +11,9 @@ class OrderRepository
     private PDO $db;
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function __construct(PDO $db)
+    public function __construct()
     {
         $this->db = Database::getInstance()->getConnection();
     }
