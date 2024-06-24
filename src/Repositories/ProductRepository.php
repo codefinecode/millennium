@@ -5,9 +5,12 @@ namespace App\Repositories;
 use App\Services\Database;
 use PDO;
 use Exception;
+
 class ProductRepository
 {
     private PDO $db;
+    const TABLE = 'products';
+    const LOCK_NAME = self::TABLE . '_lock';
 
     /**
      * @throws Exception
@@ -23,15 +26,18 @@ class ProductRepository
     public function insertProducts(array $products): bool
     {
         try {
-            $this->db->beginTransaction();
+            $tableName = self::TABLE;
+            $lockId = self::LOCK_NAME;
 
-            // Подготовка запроса для вставки или обновления
+            $this->db->beginTransaction();
+            $this->db->query("SELECT GET_LOCK('$lockId', 0)");
+
             $stmtUpsert = $this->db->prepare("
-            INSERT INTO products (title, price)
-            VALUES (:title, :price)
-            ON DUPLICATE KEY UPDATE
-                price = VALUES(price)
-        ");
+        INSERT INTO $tableName (title, price)
+        VALUES (:title, :price)
+        ON DUPLICATE KEY UPDATE
+            price = VALUES(price)
+    ");
 
             foreach ($products as $product) {
                 $stmtUpsert->execute([
@@ -41,6 +47,7 @@ class ProductRepository
             }
 
             $this->db->commit();
+            $this->db->query("SELECT RELEASE_LOCK('$lockId')");
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
@@ -98,7 +105,7 @@ class ProductRepository
                 'filter' => FILTER_CALLBACK,
                 'options' => function ($title) {
                     if (!is_string($title) || mb_strlen($title) > 255) {
-                        throw new Exception("Неправильный title: {$title} (должен быть непустой строкой не более 255 символов)");
+                        throw new Exception("Неправильный title: $title (должен быть непустой строкой не более 255 символов)");
                     }
                     return htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
                 }
@@ -108,21 +115,20 @@ class ProductRepository
                 'options' => function ($price) {
                     $validatedPrice = filter_var($price, FILTER_VALIDATE_FLOAT);
                     if ($validatedPrice === false || $validatedPrice < 0) {
-                        throw new Exception("Неправильный price: {$price} (должен быть положительным вещественным числом)");
+                        throw new Exception("Неправильный price: $price (должен быть положительным вещественным числом)");
                     }
                     return $validatedPrice;
                 }
             ]
         ];
 
-        $validatedProducts = array_map(function($product) use ($filters) {
+        return array_map(function ($product) use ($filters) {
             try {
                 return filter_var_array($product, $filters);
             } catch (Exception $e) {
                 throw new Exception("Ошибка валидации для продукта: \"{$product['title']} : {$product['price']}\" " . $e->getMessage());
             }
         }, $products);
-        return $validatedProducts;
     }
 
 

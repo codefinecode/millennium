@@ -17,6 +17,9 @@ class ProductController
         $this->productRepository = new ProductRepository();
     }
 
+    /**
+     * @throws Exception
+     */
     public function addProducts(array $products): string
     {
 

@@ -35,9 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // для удобства отладки - очищаем базу
     if (isset($_GET['flush_database']) && $_GET['flush_database'] === 'password') {
-        $migrationService = new MigrationService();
-        $migrationService->flushDatabase();
         header('Content-Type: application/json');
+        $migrationService = new MigrationService();
+        try {
+            $migrationService->flushDatabase();
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => json_encode($e)]);
+        }
         echo json_encode(['success' => true, 'message' => 'Базы очищены']);
         exit();
     }

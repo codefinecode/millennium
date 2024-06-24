@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Repositories\ClientRepository;
 use App\Repositories\OrderRepository;
-use App\Services\Database;
 use Exception;
 
 class ClientController
@@ -17,9 +16,8 @@ class ClientController
      */
     public function __construct()
     {
-        $db = Database::getInstance()->getConnection();
-        $this->clientRepository = new ClientRepository($db);
-        $this->orderRepository = new OrderRepository($db);
+        $this->clientRepository = new ClientRepository();
+        $this->orderRepository = new OrderRepository();
     }
 
     public function getClientOrders($clientId): void

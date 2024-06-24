@@ -105,7 +105,7 @@ class MigrationService
             $this->connection->exec('DROP TABLE IF EXISTS products;');
             $this->connection->exec('DROP TABLE IF EXISTS user;');
         } catch (PDOException $e) {
-            throw new Exception('Ошибка при выполнении запроса');
+            throw new Exception('Ошибка при выполнении запроса: ' . $e->getMessage() );
         }
     }
 }
