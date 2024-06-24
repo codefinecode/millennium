@@ -2,15 +2,19 @@
 
 namespace App\Repositories;
 
+use App\Services\Database;
 use PDO;
 
 class ClientRepository
 {
     private PDO $db;
 
+    /**
+     * @throws \Exception
+     */
     public function __construct(PDO $db)
     {
-        $this->db = $db;
+        $this->db = Database::getInstance()->getConnection();
     }
 
     public function findById($id)

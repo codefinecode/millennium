@@ -5,6 +5,9 @@ git clone https://github.com/codefinecode/millenium.git
 cd millenium
 composer install
 ```
+скопировать/переименовать `.env.example` в `.env`  
+и в нем настроить подключение к БД  
+
 в разработке использован локальный домен `millenium-tz-240621.local` - можно заменить на любой удобный.  
 настроить сервер на папку `public` проекта.  
 Запустить в браузере `http://millenium-tz-240621.local` (либо свой настроенный домен)  
