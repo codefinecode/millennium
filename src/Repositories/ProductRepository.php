@@ -98,7 +98,7 @@ class ProductRepository
                 'filter' => FILTER_CALLBACK,
                 'options' => function ($title) {
                     if (!is_string($title) || mb_strlen($title) > 255) {
-                        throw new Exception("Неправильный title: {$title} (должен быть непустой строкой)");
+                        throw new Exception("Неправильный title: {$title} (должен быть непустой строкой не более 255 символов)");
                     }
                     return htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
                 }

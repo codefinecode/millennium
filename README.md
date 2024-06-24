@@ -1,7 +1,7 @@
 # Запуск проекта
 
 ```
-git clone https://github.com/codefinecode/millenium.git  
+git clone https://github.com/codefinecode/millennium.git 
 cd millenium
 composer install
 ```

@@ -104,7 +104,7 @@
             });
             const data = await response.json();
             if (response.ok) {
-                alert('Продукты успешно добавлены:' + JSON.stringify(data));
+                alert('Продукты успешно добавлены:');
             } else {
                 alert(data.error);
             }

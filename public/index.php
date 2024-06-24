@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $productController = new ProductController();
         $productController->addProducts($input);
 
-        echo json_encode(['message' => 'Products added successfully']);
+        echo json_encode(['success' => true, 'message' => 'Products added successfully']);
     } catch (Exception $e) {
         http_response_code(400);
         echo json_encode(['error' => $e->getMessage()]);
@@ -37,18 +37,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['flush_database']) && $_GET['flush_database'] === 'password') {
         $migrationService = new MigrationService();
         $migrationService->flushDatabase();
-        echo json_encode(['message' => 'Базы очищены']);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Базы очищены']);
         exit();
     }
 
     //если есть параметр migrate запускаем распаковку/заполнение БД/оптимизацию
     if (isset($_GET['migrate'])) {
+        header('Content-Type: application/json');
         try {
             // Распаковка архива и загрузка дампа
             $unpackService = new UnpackService();
             $unpackService->unpackFile('../data/products.zip', '../storage/', 'sql');
 
-            // Создаем экземпляр MigrationService один раз
             $migrationService = new MigrationService();
 
             // Миграция базы данных
@@ -59,10 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Оптимизация таблиц
             $migrationService->optimizeTables();
 
-            echo json_encode(['message' => 'Migration and optimization completed']);
+            echo json_encode(['success' => true, 'message' => 'Migration and optimization completed']);
         } catch (Exception $e) {
             http_response_code(400);
-            var_dump($e);
             echo json_encode(['error' => json_encode($e)]);
         }
         exit();
