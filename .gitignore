@@ -3,5 +3,6 @@
 /.fleet
 /.osp
 /vendor
+/storage/*
 .env
 ТестовоеЗадание (2).txt
