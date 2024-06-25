@@ -4,5 +4,6 @@
 /.osp
 /vendor
 /storage/*
+!/storage/
 .env
 ТестовоеЗадание (2).txt
