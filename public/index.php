@@ -85,6 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit();
     }
 
-    // Если нет параметров client_id и migrate, подключаем HTML-контент
+    // Если нет параметров client_id и migrate (или тестового flush_database), подключаем HTML-контент
     include '../src/Views/content.php';
 }
