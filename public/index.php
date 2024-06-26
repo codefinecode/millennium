@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $productController = new ProductController();
         $productController->addProducts($input);
 
-        echo json_encode(['success' => true, 'message' => 'Products added successfully']);
+        echo json_encode(['message' => 'Products added successfully']);
     } catch (Exception $e) {
         http_response_code(400);
         echo json_encode(['error' => $e->getMessage()]);
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             http_response_code(400);
             echo json_encode(['error' => json_encode($e)]);
         }
-        echo json_encode(['success' => true, 'message' => 'Базы очищены']);
+        echo json_encode(['message' => 'Базы очищены']);
         exit();
     }
 
@@ -53,6 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         try {
             // Распаковка архива и загрузка дампа
             $unpackService = new UnpackService();
+            if (!is_dir('../storage/')) {
+                mkdir('../storage/', 0775, true);
+            }
             $unpackService->unpackFile('../data/products.zip', '../storage/', 'sql');
 
             $migrationService = new MigrationService();
@@ -65,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Оптимизация таблиц
             $migrationService->optimizeTables();
 
-            echo json_encode(['success' => true, 'message' => 'Migration and optimization completed']);
+            echo json_encode(['message' => 'Migration and optimization completed']);
         } catch (Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => json_encode($e)]);
