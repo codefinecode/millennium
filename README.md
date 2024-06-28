@@ -36,6 +36,9 @@ composer install
 распакуются в `/storage` при первой миграции, так же проведутся оптимизации.
 
 ### Для тестирования запросов:
+Выполнить первичные миграции и оптимизацию  
+`curl -X GET http://millenium-tz-240621.local/index.php?migrate`  
+
 корневой маршрут отдает html с фронтом  
 `curl -X GET http://millenium-tz-240621.local/index.php`  
 
